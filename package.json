@@ -5,7 +5,7 @@
   "author": "m_enomoto <m_enomoto@plus-one.tech>",
   "private": true,
   "scripts": {
-    "demo": "webpack --config build/webpack.config.demo.js",
+    "demo": "webpack-dev-server --inline --progress --config build/webpack.demo.conf.js",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "prod": "set NODE_ENV='production' webpack --config build/webpack.config.prod.js",
     "build": "node build/build.js"

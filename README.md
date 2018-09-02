@@ -1,6 +1,7 @@
 # talk-avatar
+![](./static/talk-avatar.gif)
 
-> A Vue.js project
+> This TalkAvatar speaks text while lip syncing.
 
 ## Build Setup
 
