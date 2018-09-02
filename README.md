@@ -7,7 +7,7 @@
 
 ``` bash
 # install dependencies
-npm install talk-avatar
+npm install plusone-masaki/talk-avatar
 
 # show demonstration at localhost:8080
 npm run demo 
