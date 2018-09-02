@@ -3,6 +3,7 @@
   "version": "0.6.0",
   "description": "A Vue.js project",
   "author": "m_enomoto <m_enomoto@plus-one.tech>",
+  "main": "src/talk-avatar/index.js",
   "private": true,
   "scripts": {
     "demo": "webpack-dev-server --inline --progress --config build/webpack.demo.conf.js",
