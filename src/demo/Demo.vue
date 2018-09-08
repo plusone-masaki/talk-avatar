@@ -1,6 +1,17 @@
 <template>
   <div id="demo">
-    <talk-avatar :src="img" :message="msg"></talk-avatar>
+    <talk-avatar
+      :msgText="'Hello world!\n' +
+          'I am talk avatar. This is demonstration.'"
+      :msgRand="[
+        'Hello!',
+        'Did you grasp the atmosphere?\n' +
+        'That\'s all you learn.',
+        'Do you understand my English?'
+      ]"
+      :msgSpeed="50"
+      :imgSrc="img"
+    />
   </div>
 </template>
 
@@ -22,7 +33,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>

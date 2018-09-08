@@ -1,62 +1,65 @@
 <template>
-  <div id="TalkAvatar">
-    <el-row type="flex" align="bottom" :gutter="16">
-      <el-col>
-        <el-card
-          shadow="always"
-          :body-style="{ padding: [isMD() ? '20px 32px' : '8px'] }"
-          @click="console.log('test')"
-        >
+  <div id="TalkAvatar" class="container">
+    <div class="columns is-mobile is-gapless">
+      <div class="column">
+        <div class="box">
           <vue-typer
-            :text="text"
+            v-if="message"
+            :text="message"
+            :typeDelay="msgSpeed"
             :repeat="0"
+            @typed="lipClose"
             @typed-char="lipSync"
           />
-        </el-card>
-      </el-col>
-      <img class="el-image" :src="img" alt="avatar">
-    </el-row>
+        </div>
+      </div>
+      <div class="image" :class="[isSP ? 'is-64x64' : 'is-128x128']" @click="rndChat">
+        <img :src="img">
+      </div>
+    </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
   * {
     box-sizing: border-box;
   }
 
   #TalkAvatar {
     bottom: 0;
-    display: flex;
     font-size: 14px;
-    justify-content: center;
     left: 0;
+    max-width: 960px;
     padding: 4px;
     position: fixed;
     right: 0;
   }
 
-  .el-row {
-    width: 960px;
+  .columns {
+    align-items: flex-end;
   }
 
-  .el-image {
-    height: 60px;
+  image {
     margin-right: 8px;
-    width: 60px;
+    width: 100%;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 769px) {
     #TalkAvatar {
       font-size: 20px;
       padding: 16px;
     }
-    .el-image {
-      height: 120px;
-      width: 120px;
-    }
-    .el-card {
-      height: 136px;
+
+    .box {
+      height: 7rem;
       line-height: 1.6;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .box {
+      height: 3.5rem;
+      padding: 4px 8px;
     }
   }
 </style>
@@ -64,43 +67,61 @@
 <script>
   import Vue from 'vue'
   import VueTyper from 'vue-typer'
-  import ElementUI from 'element-ui'
-  import 'element-ui/lib/theme-chalk/index.css'
+  import Bulma from 'bulma'
 
   Vue.use(VueTyper);
-  Vue.use(ElementUI);
+  Vue.use(Bulma);
 
   const RESET = 0;
 
   export default {
     props: {
-      message: {
+      msgText: {
         type: String,
         required: true
       },
-      src: {
+      msgRand: {
+        type: Array
+      },
+      msgSpeed: {
+        type: Number,
+        default: 70
+      },
+      imgSrc: {
         type: [String, Array],
         required: true
       }
     },
     data: function () {
       return {
-        text: this.message,
-        img: Array.isArray(this.src) ? this.src[0] : this.src,
-        imgLength: Array.isArray(this.src) ? this.src.length : 0,
+        message: this.msgText,
+        img: Array.isArray(this.imgSrc) ? this.imgSrc[0] : this.imgSrc,
+        imgLength: Array.isArray(this.imgSrc) ? this.imgSrc.length : 0,
         imgCount: RESET,
       }
     },
+    computed: {
+      isSP: () => {
+        return window.parent.screen.width <= 768
+      },
+    },
     methods: {
-      isMD: () => {
-        return window.parent.screen.width >= 768;
+      lipClose: function () {
+        this.img = this.imgSrc[RESET]
       },
       lipSync: function () {
         if (this.imgLength <= ++this.imgCount) {
           this.imgCount = RESET;
         }
-        this.img = this.src[this.imgCount];
+        this.img = this.imgSrc[this.imgCount];
       },
-    },
+      rndChat: function () {
+        if (this.msgRand) {
+          this.message = this.msgRand[Math.floor(Math.random() * this.msgRand.length)]
+        } else {
+          this.message = this.msgText
+        }
+      }
+    }
   }
 </script>
