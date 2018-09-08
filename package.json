@@ -1,6 +1,6 @@
 {
   "name": "talk-avatar",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "description": "A Vue.js project",
   "author": "m_enomoto <m_enomoto@plus-one.tech>",
   "main": "src/talk-avatar/index.js",
