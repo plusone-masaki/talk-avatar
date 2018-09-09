@@ -1,7 +1,7 @@
 {
   "name": "talk-avatar",
-  "version": "0.8.0",
-  "description": "A Vue.js project",
+  "version": "0.8.1",
+  "description": "This TalkAvatar speaks text while lip syncing.",
   "author": "m_enomoto <m_enomoto@plus-one.tech>",
   "main": "src/talk-avatar/index.js",
   "private": true,

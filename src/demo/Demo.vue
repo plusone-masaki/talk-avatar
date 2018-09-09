@@ -1,34 +1,33 @@
 <template>
   <div id="demo">
+    <button @click="say('hello')">say 'hello'</button>
     <talk-avatar
-      :msgText="'Hello world!\n' +
-          'I am talk avatar. This is demonstration.'"
-      :msgRand="[
-        'Hello!',
-        'Did you grasp the atmosphere?\n' +
-        'That\'s all you learn.',
-        'Do you understand my English?'
-      ]"
-      :msgSpeed="50"
-      :imgSrc="img"
+      :message="message"
+      :talkSpeed="50"
+      :imgSrc="images"
     />
   </div>
 </template>
 
 <script>
-  import {TalkAvatar} from '../talk-avatar'
+  import { TalkAvatar } from '../talk-avatar'
 
   export default {
     name: "Demo",
-    components: {TalkAvatar},
+    components: { TalkAvatar },
     data: function () {
       return {
-        msg: 'Hello world!\n' +
+        message: 'Hello world!\n' +
           'I am talk avatar. This is demonstration.',
-        img: [
+        images: [
           require('./img/masaki_default.png'),
           require('./img/masaki_talking.png')
         ]
+      }
+    },
+    methods: {
+      say(mes) {
+        this.message = mes
       }
     }
   }
