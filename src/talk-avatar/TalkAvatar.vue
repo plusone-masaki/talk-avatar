@@ -1,79 +1,115 @@
 <template>
-  <div id="TalkAvatar" class="container">
-    <div class="columns is-mobile is-gapless">
-      <div class="column">
-        <speech-balloon
-          @typed="talked"
+  <div id="TalkAvatar">
+    <div class="avatar_row">
+      <div class="avatar_column-balloon">
+        <message-balloon
+          v-show="isMsgShow"
+          :msg-text="msgSay"
+          :msg-speed="msgSpeed"
+          :msg-wait="msgWait"
           @typing="talking"
-          :msg-text="message"
-          :msg-speed="talkSpeed"
+          @typed-line="talkedLine"
+          @typed-all="talkedAll"
+          @touched="msgTouched"
         />
       </div>
-      <puppet-man
-        @touched="touched"
-        :img-src="imgSrc"
-        :is-mobile="isMobile"
-        ref="puppet"
-      />
+      <div class="avatar_column-img">
+        <avatar-image
+          :img-src="imgSrc"
+          @touched="imgTouched"
+          ref="avatar"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-  import Vue from 'vue'
-  import Bulma from 'bulma'
-  import SpeechBalloon from './SpeechBalloon'
-  import PuppetMan from './PuppetMan'
-
-  Vue.use(Bulma)
+  import MessageBalloon from './MessageBalloon'
+  import AvatarImage from './AvatarImage'
 
   export default {
-    components: { SpeechBalloon, PuppetMan },
+    components: { MessageBalloon, AvatarImage },
     props: {
-      message: { type: String, required: true },
-      talkSpeed: { type: Number },
+      msgText: { type: String, required: true },
+      msgSpeed: { type: Number, default: 70 },
+      msgWait: { type: Number, default: 300 },
       imgSrc: { type: [String, Array], required: true }
     },
+    data: function () {
+      return {
+        isMsgShow: true
+      }
+    },
     computed: {
-      isMobile() {
-        return window.parent.screen.width <= 768
+      msgSay() {
+        this.isMsgShow = true
+        return this.msgText
       }
     },
     methods: {
-      talked() {
-        this.$refs.puppet.talked()
-      },
       talking() {
-        this.$refs.puppet.talking()
+        const avatar = this.$refs.avatar
+        this.isMsgShow ? avatar.talking() : avatar.talked()
       },
-      touched() {
-        this.$emit('touched')
+      talkedLine() {
+        this.$emit('talked-line')
+      },
+      talkedAll() {
+        this.$refs.avatar.talked()
+        this.$emit('talked-all')
+      },
+      msgTouched() {
+        this.isMsgShow = false
+        this.$emit('msg-touched')
+      },
+      imgTouched() {
+        this.$emit('img-touched')
       }
     }
   }
 </script>
 
-<style scoped>
-  * {
-    box-sizing: border-box;
-  }
+<style lang="scss" scoped>
+  @import 'scss/valiables';
 
   #TalkAvatar {
     bottom: 0;
+    display: flex;
+    justify-content: center;
     left: 0;
-    max-width: 960px;
-    padding: 4px;
+    padding: 16px;
     position: fixed;
     right: 0;
+
+    @include touch {
+      padding: 4px;
+    }
   }
 
-  .columns {
-    align-items: flex-end;
-  }
+  .avatar {
+    &_row {
+      align-items: flex-end;
+      display: flex;
+      width: 960px;
+    }
 
-  @media (min-width: 769px) {
-    #TalkAvatar {
-      padding: 16px;
+    &_column {
+      &-balloon {
+        flex: 1;
+      }
+
+      &-img {
+        @include desktop {
+          height: 128px;
+          width: 128px;
+        }
+
+        @include touch {
+          height: 64px;
+          width: 64px;
+        }
+      }
     }
   }
 </style>

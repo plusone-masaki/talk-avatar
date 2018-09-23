@@ -1,7 +1,5 @@
 <template>
-  <div class="image" :class="imageSize" @click="touched">
-    <img :src="img">
-  </div>
+  <img class="avatar_image" :src="img" @click="touched">
 </template>
 
 <script>
@@ -9,18 +7,14 @@
 
   export default {
     props: {
-      imgSrc: { type: [String, Array], required: true },
-      isMobile: { type: Boolean }
+      imgSrc: { type: [String, Array], required: true }
     },
     data: function () {
       return {
-        img: Array.isArray(this.imgSrc) ? this.imgSrc[0] : this.imgSrc,
+        img: Array.isArray(this.imgSrc)
+          ? this.imgSrc[0]
+          : this.imgSrc,
         imgCount: RESET
-      }
-    },
-    computed: {
-      imageSize() {
-        return this.isMobile ? 'is-64x64' : 'is-128x128'
       }
     },
     methods: {
@@ -34,14 +28,14 @@
         this.img = this.imgSrc[RESET]
       },
       touched() {
-        this.$emit('touched')
+        this.$emit('img-touched')
       }
     }
   }
 </script>
 
 <style scoped>
-  image {
+  .avatar_image {
     width: 100%;
   }
 </style>

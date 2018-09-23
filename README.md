@@ -49,23 +49,28 @@ Vue.use(TalkAvatar)
 
 ## Props
 
-`message`
+`msg-text`
 * type: `String`
 * required
 
-`talk-speed`
+`msg-speed`
 * type: `Number`
+
+`msg-wait`
+* type: `Number`
+
+`balloon-style`
+* type: `Object`
 
 `img-src`
 * type: `String || Array`
 
 ## Events
 
-`touched`
+`talked-line`
 
-Emmit when touched avatar.
+`talked-all`
 
-```html
-<talk-avatar @touched="onTouched" />
-```
+`msg-touched`
 
+`img-touched`
