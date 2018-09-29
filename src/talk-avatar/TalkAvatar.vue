@@ -43,7 +43,8 @@
       imgSrc: { type: Array, required: true },
       msgText: { type: String, required: true },
       msgSpeed: { type: Number, default: 70 },
-      msgWait: { type: Number, default: 300 }
+      msgWait: { type: Number, default: 300 },
+      balloonStyle: { type: Object }
     },
 
     /**
