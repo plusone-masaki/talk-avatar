@@ -8,6 +8,7 @@
                   :msg-text="msgSay"
                   :msg-speed="msgSpeed"
                   :msg-wait="msgWait"
+                  :balloon-style="balloonStyle"
                   @typing="talking"
                   @typed-line="talkedLine"
                   @typed-all="talkedAll"
