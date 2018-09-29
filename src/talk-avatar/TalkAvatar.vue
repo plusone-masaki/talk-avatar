@@ -96,8 +96,8 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "css/ress.min.css";
-  @import 'css/_valiables';
+  @import './css/ress.min.css';
+  @import './css/_valiables';
 
   #TalkAvatar {
     bottom: 0;

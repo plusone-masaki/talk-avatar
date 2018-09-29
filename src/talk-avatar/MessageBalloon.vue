@@ -95,7 +95,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "css/_valiables";
+    @import './css/_valiables';
 
   .balloon {
     background: #ffffff;
