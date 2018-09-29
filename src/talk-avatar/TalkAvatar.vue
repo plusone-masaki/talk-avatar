@@ -2,24 +2,26 @@
   <div id="TalkAvatar">
     <div class="avatar_row">
       <div class="avatar_column-balloon">
-        <message-balloon
-          v-show="isMsgShow"
-          :msg-text="msgSay"
-          :msg-speed="msgSpeed"
-          :msg-wait="msgWait"
-          @typing="talking"
-          @typed-line="talkedLine"
-          @typed-all="talkedAll"
-          @touched="msgTouched"
-        />
+        <transition>
+          <message-balloon
+                  v-show="isMsgShow"
+                  :msg-text="msgSay"
+                  :msg-speed="msgSpeed"
+                  :msg-wait="msgWait"
+                  @typing="talking"
+                  @typed-line="talkedLine"
+                  @typed-all="talkedAll"
+                  @touched="msgTouched"
+          />
+        </transition>
       </div>
-      <div class="avatar_column-img">
+      <figure class="avatar_column-img">
         <avatar-image
           :img-src="imgSrc"
           @touched="imgTouched"
           ref="avatar"
         />
-      </div>
+      </figure>
     </div>
   </div>
 </template>
@@ -30,23 +32,46 @@
 
   export default {
     components: { MessageBalloon, AvatarImage },
+
+    /**
+     * @var Array imgSrc
+     * @var String msgText
+     * @var Number msgSpeed
+     * @var Number msgWait
+     */
     props: {
+      imgSrc: { type: Array, required: true },
       msgText: { type: String, required: true },
       msgSpeed: { type: Number, default: 70 },
-      msgWait: { type: Number, default: 300 },
-      imgSrc: { type: [String, Array], required: true }
+      msgWait: { type: Number, default: 300 }
     },
+
+    /**
+     * @var bool isMsgShow
+     */
     data: function () {
       return {
         isMsgShow: true
       }
     },
+
+    /**
+     * @method msgSay
+     */
     computed: {
       msgSay() {
         this.isMsgShow = true
         return this.msgText
       }
     },
+
+    /**
+     * @method talking
+     * @event talked-line
+     * @event talked-all
+     * @event msg-touched
+     * @event img-touched
+     */
     methods: {
       talking() {
         const avatar = this.$refs.avatar
@@ -71,7 +96,8 @@
 </script>
 
 <style lang="scss" scoped>
-  @import 'scss/valiables';
+  @import "css/ress.min.css";
+  @import 'css/_valiables';
 
   #TalkAvatar {
     bottom: 0;
@@ -80,6 +106,7 @@
     left: 0;
     padding: 16px;
     position: fixed;
+    pointer-events: none;
     right: 0;
 
     @include touch {
