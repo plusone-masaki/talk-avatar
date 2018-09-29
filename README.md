@@ -1,36 +1,27 @@
 # TalkAvatar
 ![](./static/talk-avatar.gif)
 
-> This TalkAvatar speaks text while lip syncing.
+> メッセージを入力すると、アバターが喋ります。
+> アバターには自分の好きな画像を設定することができ、
+> 吹き出しのスタイルも変更可能です！
 
-## Build Setup
+## インストール方法
 
 ``` bash
-# install dependencies
+# インストール
 npm install plusone-masaki/talk-avatar
-
-# show demonstration at localhost:8080
-npm run demo 
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
 
-## Usage
+## 使用方法
 
-1. Import the TalkAvatar component directly from your Vue component file:
+1. TalkAvatarをVueファイル内でインポートします。
 ```ecmascript 6
 import { TalkAvatar } from 'talk-avatar'
 ```
 
-2. Register it as your Vue component:
+2. コンポーネントの登録を行います。
 ```ecmascript 6
+// ローカルコンポーネントとして登録
 const MyComponent = {
   // ...
   components: { TalkAvatar }
@@ -38,12 +29,14 @@ const MyComponent = {
 
 or
 
+// グローバルコンポーネントとして登録
 import Vue from 'vue'
 Vue.use(TalkAvatar)
 ```
 
-3. Use TalkAvatar in your Vue component's template:
+3. TalkAvatarをテンプレート内で呼び出します。
 ```html
+<!-- message と imgSrc は必須項目 -->
 <talk-avatar message="Hello world!" imgSrc="[./default.png, ./talking.png]" />
 ```
 
@@ -63,7 +56,7 @@ Vue.use(TalkAvatar)
 * type: `Object`
 
 `img-src`
-* type: `String || Array`
+* type: `Array`
 
 ## Events
 

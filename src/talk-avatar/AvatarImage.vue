@@ -6,29 +6,41 @@
   const RESET = 0
 
   export default {
+    /**
+     * @var Array imgSrc
+     */
     props: {
-      imgSrc: { type: [String, Array], required: true }
+      imgSrc: { type: Array, required: true }
     },
+
+    /**
+     * @var img: string
+     * @var imgNum: number
+     */
     data: function () {
       return {
-        img: Array.isArray(this.imgSrc)
-          ? this.imgSrc[0]
-          : this.imgSrc,
-        imgCount: RESET
+        img: this.imgSrc[RESET],
+        imgNum: RESET
       }
     },
+
+    /**
+     * @method talking
+     * @method talked
+     * @event touched
+     */
     methods: {
       talking() {
-        if (!this.imgSrc[++this.imgCount]) {
-          this.imgCount = RESET
+        if (!this.imgSrc[++this.imgNum]) {
+          this.imgNum = RESET
         }
-        this.img = this.imgSrc[this.imgCount]
+        this.img = this.imgSrc[this.imgNum]
       },
       talked() {
         this.img = this.imgSrc[RESET]
       },
       touched() {
-        this.$emit('img-touched')
+        this.$emit('touched')
       }
     }
   }
@@ -36,6 +48,8 @@
 
 <style scoped>
   .avatar_image {
+      cursor: pointer;
+      pointer-events: auto;
     width: 100%;
   }
 </style>
