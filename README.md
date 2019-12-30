@@ -36,15 +36,14 @@ Vue.use(TalkAvatar)
 
 3. TalkAvatarをテンプレート内で呼び出します。
 ```html
-<!-- message と imgSrc は必須項目 -->
-<talk-avatar message="Hello world!" imgSrc="[./default.png, ./talking.png]" />
+<talk-avatar message="Hello world!" :srcset="[./default.png, ./talking.png]" />
 ```
 
 ## Props
 
 `msg-text`
 * type: `String`
-* required
+* default: ''
 
 `msg-speed`
 * type: `Number`
@@ -55,8 +54,8 @@ Vue.use(TalkAvatar)
 `balloon-style`
 * type: `Object`
 
-`img-src`
-* type: `Array`
+`srcset`
+* type: `[Array, String]`
 
 ## Events
 

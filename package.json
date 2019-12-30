@@ -1,6 +1,6 @@
 {
   "name": "talk-avatar",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "This TalkAvatar speaks text while lip syncing.",
   "author": "m_enomoto <m_enomoto@plus-one.tech>",
   "main": "src/talk-avatar/index.js",
