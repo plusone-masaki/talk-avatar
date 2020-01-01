@@ -108,7 +108,6 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-@import './css/ress.min.css'
 @import './css/_valiables'
 
 #TalkAvatar
@@ -135,6 +134,8 @@ export default {
       flex: 1
 
     &-img
+      margin: 0
+
       @include desktop
         height: 128px
         width: 128px

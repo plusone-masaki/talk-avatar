@@ -99,6 +99,7 @@ export default {
   background: #ffffff
   border-radius: 6px
   box-shadow: 0 2px 3px rgba(10, 10, 10, .1)
+  box-sizing: border-box
   cursor: pointer
   padding: .5em 1.25em
   pointer-events: auto
