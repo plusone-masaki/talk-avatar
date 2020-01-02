@@ -127,7 +127,8 @@ export default {
   &_row
     align-items: flex-end
     display: flex
-    width: 960px
+    max-width: 960px
+    width: 100%
 
   &_column
     &-balloon
