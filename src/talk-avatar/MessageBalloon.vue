@@ -93,7 +93,7 @@ const typeNextChar = () => {
   }
 }
 
-const touched = (e) => {
+const touched = (e: PointerEvent) => {
   if (!(e.target instanceof HTMLAnchorElement)) emit('touched')
 }
 
