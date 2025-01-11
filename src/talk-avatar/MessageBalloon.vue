@@ -1,24 +1,23 @@
 <template lang="pug">
 div.balloon(
-  :style="balloonStyle"
+  :style="style"
   @click="touched"
 )
-  div.balloon_container(v-if="msgText")
+  div.balloon_container(v-if="message")
     p.balloon_row(
-      v-for="(text, index) in displayedText"
+      v-for="(text, index) in splitMessage"
       :key="index"
     )
-      span(ref="typingText") {{ displayedText[index] || '' }}
+      span(ref="typingText" style="white-space: pre-wrap") {{ displayedText[index] || '' }}
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 
-type Props = {
-  balloonStyle?: Record<string, string>
-  msgText: string
-  msgSpeed?: number
-  msgWait?: number
+interface Props {
+  style?: Record<string, string>
+  message: string
+  delay: number
 }
 
 type EmitEvents = {
@@ -28,7 +27,11 @@ type EmitEvents = {
   (e: 'touched'): void
 }
 
-const props = defineProps<Props>()
+const props = defineProps({
+  style: { type: Object },
+  message: { type: String, required: true },
+  delay: { type: Number, default: 70 }
+})
 const emit = defineEmits<EmitEvents>()
 
 const lines = ref<number>(1)
@@ -38,12 +41,15 @@ const currentChar = ref<number>(0)
 
 const splitMessage = computed(() => {
   lines.value = 0
-  return props.msgText.split('\n')
+  return props.message.split('\n')
 })
 
 const messageLines = computed(() => {
   return splitMessage.value.slice(0, lines.value)
 })
+
+// すべての空白文字を判定する正規表現
+const WHITESPACE_REGEX = /[\s\u00A0\u1680\u180E\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]/
 
 const typeNextChar = () => {
   if (currentLine.value >= splitMessage.value.length) return
@@ -54,10 +60,13 @@ const typeNextChar = () => {
   }
 
   if (currentChar.value < line.length) {
-    displayedText.value[currentLine.value] += line[currentChar.value]
+    const char = line[currentChar.value]
+    const isSpace = WHITESPACE_REGEX.test(char)
+    displayedText.value[currentLine.value] += char
     currentChar.value++
-    emit('typing')
-    setTimeout(typeNextChar, props.msgSpeed)
+    
+    isSpace ? emit('typed-line') : emit('typing')
+    setTimeout(typeNextChar, props.delay)
   } else {
     emit('typed-line')
     currentChar.value = 0
@@ -66,7 +75,7 @@ const typeNextChar = () => {
       setTimeout(() => {
         lines.value++
         typeNextChar()
-      }, props.msgWait)
+      }, props.delay * 4)
     } else {
       emit('typed-all')
     }
@@ -77,8 +86,7 @@ const touched = () => {
   emit('touched')
 }
 
-watch(() => props.msgText, () => {
-  lines.value = 1
+watch(() => props.message, () => {
   currentLine.value = 0
   currentChar.value = 0
   displayedText.value = []

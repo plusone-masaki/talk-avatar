@@ -5,10 +5,9 @@
       transition
         message-balloon(
           v-show="isMsgShow"
-          :msg-text="msgText"
-          :msg-speed="msgSpeed"
-          :msg-wait="msgWait"
-          :balloon-style="balloonStyle"
+          :message="message"
+          :delay="delay"
+          :style="style"
           @typing="talking"
           @typed-line="talkedLine"
           @typed-all="talkedAll"
@@ -29,18 +28,15 @@ import AvatarImage from './AvatarImage.vue'
 
 interface Props {
   srcset: string | string[]
-  msgText: string
-  msgSpeed?: number
-  msgWait?: number
-  balloonStyle?: Record<string, string>
-  imgSrc?: string[] // deprecated
+  message: string
+  delay?: number
+  style?: Record<string, string>
 }
 
 const props = withDefaults(defineProps<Props>(), {
   srcset: '',
-  msgText: '',
-  msgSpeed: 70,
-  msgWait: 300
+  message: '',
+  delay: 70
 })
 
 type EmitEvents = {
@@ -55,7 +51,6 @@ const avatar = ref<InstanceType<typeof AvatarImage> | null>(null)
 const isMsgShow = ref(true)
 
 const images = computed(() => {
-  if (!(props.srcset && props.srcset.length)) return props.imgSrc
   if (typeof props.srcset === 'string') return props.srcset.split(',').map(src => src.trim())
   return props.srcset
 })

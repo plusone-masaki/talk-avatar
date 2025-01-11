@@ -3,7 +3,7 @@ div.demo-page
   div.demo-content
     talk-avatar(
       :srcset="avatarImages"
-      :msg-text="message"
+      :message="message"
       @talked-all="onTalkedAll"
     )
   
