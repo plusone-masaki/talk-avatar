@@ -1,114 +1,91 @@
-<template>
-  <div id="TalkAvatar">
-    <div class="avatar_row">
-      <div class="avatar_column-balloon">
-        <transition>
-          <message-balloon
-            v-show="isMsgShow"
-            :msg-text="msgSay"
-            :msg-speed="msgSpeed"
-            :msg-wait="msgWait"
-            :balloon-style="balloonStyle"
-            @typing="talking"
-            @typed-line="talkedLine"
-            @typed-all="talkedAll"
-            @touched="msgTouched"
-          />
-        </transition>
-      </div>
-      <figure class="avatar_column-img">
-        <avatar-image
-          ref="avatar"
-          :srcset="images"
-          @touched="imgTouched"
-        />
-      </figure>
-    </div>
-  </div>
+<template lang="pug">
+#TalkAvatar
+  div.avatar_row
+    div.avatar_column-balloon
+      transition
+        message-balloon(
+          v-show="isMsgShow"
+          :msg-text="msgText"
+          :msg-speed="msgSpeed"
+          :msg-wait="msgWait"
+          :balloon-style="balloonStyle"
+          @typing="talking"
+          @typed-line="talkedLine"
+          @typed-all="talkedAll"
+          @touched="msgTouched"
+        )
+    figure.avatar_column-img
+      avatar-image(
+        ref="avatar"
+        :srcset="images"
+        @touched="imgTouched"
+      )
 </template>
 
-<script>
-import MessageBalloon from './MessageBalloon'
-import AvatarImage from './AvatarImage'
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue'
+import MessageBalloon from './MessageBalloon.vue'
+import AvatarImage from './AvatarImage.vue'
 
-export default {
-  components: { MessageBalloon, AvatarImage },
+interface Props {
+  srcset: string | string[]
+  msgText: string
+  msgSpeed?: number
+  msgWait?: number
+  balloonStyle?: Record<string, string>
+  imgSrc?: string[] // deprecated
+}
 
-  /**
-   * @var Array imgSrc
-   * @var String msgText
-   * @var Number msgSpeed
-   * @var Number msgWait
-   */
-  props: {
-    srcset: { type: [String, Array], default: '' },
-    msgText: { type: String, default: '' },
-    msgSpeed: { type: Number, default: 70 },
-    msgWait: { type: Number, default: 300 },
-    balloonStyle: { type: Object },
+const props = withDefaults(defineProps<Props>(), {
+  srcset: '',
+  msgText: '',
+  msgSpeed: 70,
+  msgWait: 300
+})
 
-    /** @deprecated imgSrc */
-    imgSrc: { type: Array },
-  },
+type EmitEvents = {
+  'talked-line': []
+  'talked-all': []
+  'msg-touched': []
+  'img-touched': []
+}
 
-  /**
-   * @var bool isMsgShow
-   */
-  data: function () {
-    return {
-      isMsgShow: true
-    }
-  },
+const emit = defineEmits<EmitEvents>()
+const avatar = ref<InstanceType<typeof AvatarImage> | null>(null)
+const isMsgShow = ref(true)
 
-  /**
-   * @method msgSay
-   */
-  computed: {
-    msgSay() {
-      this.isMsgShow = true
-      return this.msgText
-    },
-    images () {
-      // imgSrcプロパティは後方互換性のみ残して非推奨
-      if (!(this.srcset && this.srcset.length)) return this.imgSrc
+const images = computed(() => {
+  if (!(props.srcset && props.srcset.length)) return props.imgSrc
+  if (typeof props.srcset === 'string') return props.srcset.split(',').map(src => src.trim())
+  return props.srcset
+})
 
-      if (typeof this.srcset === 'string') return this.srcset.split(',').map(src => src.trim())
-      return this.srcset
-    },
-  },
+const talking = () => {
+  isMsgShow.value ? avatar.value?.talking() : avatar.value?.talked()
+}
 
-  /**
-   * @method talking
-   * @event talked-line
-   * @event talked-all
-   * @event msg-touched
-   * @event img-touched
-   */
-  methods: {
-    talking() {
-      const avatar = this.$refs.avatar
-      this.isMsgShow ? avatar.talking() : avatar.talked()
-    },
-    talkedLine() {
-      this.$emit('talked-line')
-    },
-    talkedAll() {
-      this.$refs.avatar.talked()
-      this.$emit('talked-all')
-    },
-    msgTouched() {
-      this.isMsgShow = false
-      this.$emit('msg-touched')
-    },
-    imgTouched() {
-      this.$emit('img-touched')
-    },
-  },
+const talkedLine = () => {
+  avatar.value?.talked()
+  emit('talked-line')
+}
+
+const talkedAll = () => {
+  avatar.value?.talked()
+  emit('talked-all')
+}
+
+const msgTouched = () => {
+  isMsgShow.value = false
+  emit('msg-touched')
+}
+
+const imgTouched = () => {
+  emit('img-touched')
 }
 </script>
 
 <style lang="sass" scoped>
-@import './css/_valiables'
+@use './css/_variables' as *
 
 #TalkAvatar
   bottom: 0

@@ -1,99 +1,93 @@
-<template>
-  <div
-    class="balloon"
-    :style="balloonStyle"
-    @click="touched"
-  >
-    <div class="balloon_container" v-if="msgText">
-      <p class="balloon_row" v-for="(text, index) in messageLines">
-        <vue-typer
-          :text="text"
-          :typeDelay="msgSpeed"
-          :repeat="0"
-          :key="index"
-          @typed="typedLine"
-          @typed-char="typing"
-        />
-      </p>
-    </div>
-  </div>
+<template lang="pug">
+div.balloon(
+  :style="balloonStyle"
+  @click="touched"
+)
+  div.balloon_container(v-if="msgText")
+    p.balloon_row(
+      v-for="(text, index) in displayedText"
+      :key="index"
+    )
+      span(ref="typingText") {{ displayedText[index] || '' }}
 </template>
 
-<script>
-import Vue from 'vue'
-import VueTyper from 'vue-typer'
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue'
 
-Vue.use(VueTyper)
-
-const RESET = 0
-const START = 1
-
-export default {
-  /**
-   * @var balloonStyle
-   * @var msgText
-   * @var msgSpeed
-   * @var msgWait
-   */
-  props: {
-    balloonStyle: { type: Object },
-    msgText: { type: String, required: true },
-    msgSpeed: { type: Number },
-    msgWait: { type: Number }
-  },
-
-  /**
-   * @var lines
-   */
-  data: function () {
-    return { lines: START }
-  },
-
-  /**
-   * @method splitMessage
-   * @method messageLines
-   */
-  computed: {
-    splitMessage() {
-      this.lines = RESET
-      this.$nextTick(() => this.lines++)
-      return this.msgText.split('\n')
-    },
-    messageLines() {
-      return this.splitMessage.slice(0, this.lines)
-    }
-  },
-
-  /**
-   * @method typedLine
-   * @method nextLine
-   * @event typing
-   * @event typed-line
-   * @event typed-all
-   * @event touched
-   */
-  methods: {
-    typing() {
-      this.$emit('typing')
-    },
-    typedLine() {
-      this.$emit('typed-line')
-      this.splitMessage.length > this.lines
-        ? setTimeout(this.nextLine, this.msgWait)
-        : this.$emit('typed-all')
-    },
-    touched() {
-      this.$emit('touched')
-    },
-    nextLine() {
-      this.lines++
-    },
-  },
+type Props = {
+  balloonStyle?: Record<string, string>
+  msgText: string
+  msgSpeed?: number
+  msgWait?: number
 }
+
+type EmitEvents = {
+  (e: 'typing'): void
+  (e: 'typed-line'): void 
+  (e: 'typed-all'): void
+  (e: 'touched'): void
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<EmitEvents>()
+
+const lines = ref<number>(1)
+const displayedText = ref<string[]>([])
+const currentLine = ref<number>(0)
+const currentChar = ref<number>(0)
+
+const splitMessage = computed(() => {
+  lines.value = 0
+  return props.msgText.split('\n')
+})
+
+const messageLines = computed(() => {
+  return splitMessage.value.slice(0, lines.value)
+})
+
+const typeNextChar = () => {
+  if (currentLine.value >= splitMessage.value.length) return
+
+  const line = splitMessage.value[currentLine.value]
+  if (!displayedText.value[currentLine.value]) {
+    displayedText.value[currentLine.value] = ''
+  }
+
+  if (currentChar.value < line.length) {
+    displayedText.value[currentLine.value] += line[currentChar.value]
+    currentChar.value++
+    emit('typing')
+    setTimeout(typeNextChar, props.msgSpeed)
+  } else {
+    emit('typed-line')
+    currentChar.value = 0
+    currentLine.value++
+    if (currentLine.value < splitMessage.value.length) {
+      setTimeout(() => {
+        lines.value++
+        typeNextChar()
+      }, props.msgWait)
+    } else {
+      emit('typed-all')
+    }
+  }
+}
+
+const touched = () => {
+  emit('touched')
+}
+
+watch(() => props.msgText, () => {
+  lines.value = 1
+  currentLine.value = 0
+  currentChar.value = 0
+  displayedText.value = []
+  typeNextChar()
+}, { immediate: true })
 </script>
 
 <style lang="sass" scoped>
-@import './css/_valiables'
+@use './css/_variables' as *
 
 .balloon
   background: #ffffff
@@ -103,7 +97,6 @@ export default {
   cursor: pointer
   padding: .5em 1.25em
   pointer-events: auto
-
   font-size: 20px
   min-height: 4.8em
   line-height: 1.6

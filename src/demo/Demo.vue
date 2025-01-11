@@ -1,96 +1,60 @@
-<template>
-  <div id="demo">
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-      integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-      crossorigin="anonymous"
-    >
-    <header class="header">
-      <p class="title">Talk Avatar</p>
-      <p class="subtitle">DEMO</p>
-      <i class="far fa-comment-dots" />
-    </header>
-    <div class="field">
-      <div class="control">
-        <textarea
-          v-model="inputMessage"
-          class="message"
-          cols="60"
-          rows="5"
-          placeholder="Please input any message and submit."
-        />
-      </div>
-      <div class="control">
-        <button class="submit" @click="say(inputMessage)">SAY</button>
-      </div>
-    </div>
-    <talk-avatar
-      :msgText="message"
-      :msgSpeed="70"
-      :srcset="images"
-    />
-  </div>
+<template lang="pug">
+div.demo-page
+  div.demo-content
+    talk-avatar(
+      :srcset="avatarImages"
+      :msg-text="message"
+      @talked-all="onTalkedAll"
+    )
+  
+  div.demo-controls
+    div.message-input
+      textarea(
+        v-model="messageInput"
+        placeholder="メッセージを入力"
+      )
+    button.send-button(
+      @click="sendMessage"
+    ) 送信
 </template>
 
-<script>
-import { TalkAvatar } from '../talk-avatar'
+<script setup lang="ts">
+import { ref } from 'vue'
 
-export default {
-  name: "Demo",
-  components: { TalkAvatar },
-  data () {
-    return {
-      message: 'Hello world!\n' +
-        'I am talk avatar. This is demonstration.',
-      inputMessage: '',
-      images: [
-        require('./img/masaki_default.png'),
-        require('./img/masaki_talking.png'),
-      ],
-    }
-  },
-  methods: {
-    say (mes) {
-      this.message = mes
-    },
-  },
+const messageInput = ref('')
+const message = ref('Hello world!\nI am talk avatar. This is demonstration.')
+const avatarImages = ref([
+  '/img/masaki_default.png',
+  '/img/masaki_talking.png',
+])
+
+const sendMessage = () => {
+  message.value = messageInput.value
+}
+
+const onTalkedAll = () => {
+  console.log('Finished talking')
 }
 </script>
 
 <style lang="sass" scoped>
-  .header
-    text-align: center
-    padding: 20px
+.demo-page
+  padding: 20px
 
-  .header .title
-    font-size: 30px
-    margin: 0
+.demo-content
+  margin-bottom: 20px
 
-  .header .subtitle
-    font-size: 25px
-    margin-top: 0
+.demo-controls
+  display: flex
+  gap: 10px
+  
+.message-input
+  flex: 1
 
-  .far
-    font-size: 200px
+  textarea
+    width: 100%
+    min-height: 60px
 
-  .control
-    text-align: center
-
-  .control .message
-    border: 0
-    border-radius: 6px
-    box-shadow: 0 0 0 3px orange
-    font-size: 20px
-    padding: 8px
-
-  .control .submit
-    margin-top: 30px
-    background: #ffffff
-    border: 0
-    border-radius: 6px
-    box-shadow: 0 0 0 3px cornflowerblue
-    font-size: 20px
-    height: 30px
-    width: 120px
+.send-button
+  padding: 0 20px
 </style>
