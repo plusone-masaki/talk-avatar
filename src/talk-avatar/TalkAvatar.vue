@@ -9,6 +9,7 @@
           :delay="delay"
           :style="style"
           @typing="talking"
+          @talked-space="talked"
           @typed-line="talkedLine"
           @typed-all="talkedAll"
           @touched="msgTouched"
@@ -59,6 +60,10 @@ const talking = () => {
   isMsgShow.value ? avatar.value?.talking() : avatar.value?.talked()
 }
 
+const talked = () => {
+  avatar.value?.talked()
+}
+
 const talkedLine = () => {
   avatar.value?.talked()
   emit('talked-line')
@@ -77,6 +82,11 @@ const msgTouched = () => {
 const imgTouched = () => {
   emit('img-touched')
 }
+
+// メッセージが更新されたら吹き出しを表示
+watch(() => props.message, () => {
+  isMsgShow.value = true
+})
 </script>
 
 <style lang="sass" scoped>

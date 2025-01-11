@@ -5,14 +5,24 @@ div.balloon(
 )
   div.balloon_container(v-if="message")
     p.balloon_row(
-      v-for="(text, index) in splitMessage"
+      v-for="(text, index) in lines"
       :key="index"
     )
-      span(ref="typingText" style="white-space: pre-wrap") {{ displayedText[index] || '' }}
+      span(
+        v-html="displayedText[index] ?? ''"
+        ref="typingText"
+        style="white-space: pre-wrap"
+      )
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+
+// すべての空白文字を判定する正規表現
+const WHITESPACE_REGEX = /[\s\u00A0\u1680\u180E\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]/
+
+// URLを検出する正規表現
+const URL_REGEX = /^https?:\/\/[^\s<>]+/
 
 interface Props {
   style?: Record<string, string>
@@ -22,39 +32,25 @@ interface Props {
 
 type EmitEvents = {
   (e: 'typing'): void
+  (e: 'talked-space'): void
   (e: 'typed-line'): void 
   (e: 'typed-all'): void
   (e: 'touched'): void
 }
 
-const props = defineProps({
-  style: { type: Object },
-  message: { type: String, required: true },
-  delay: { type: Number, default: 70 }
-})
+const props = defineProps<Props>()
 const emit = defineEmits<EmitEvents>()
 
-const lines = ref<number>(1)
+const lines = computed(() => props.message.split('\n'))
 const displayedText = ref<string[]>([])
 const currentLine = ref<number>(0)
 const currentChar = ref<number>(0)
-
-const splitMessage = computed(() => {
-  lines.value = 0
-  return props.message.split('\n')
-})
-
-const messageLines = computed(() => {
-  return splitMessage.value.slice(0, lines.value)
-})
-
-// すべての空白文字を判定する正規表現
-const WHITESPACE_REGEX = /[\s\u00A0\u1680\u180E\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]/
+const isLink = ref<boolean>(false)
 
 const typeNextChar = () => {
-  if (currentLine.value >= splitMessage.value.length) return
+  if (currentLine.value >= lines.value.length) return
 
-  const line = splitMessage.value[currentLine.value]
+  const line = lines.value[currentLine.value]
   if (!displayedText.value[currentLine.value]) {
     displayedText.value[currentLine.value] = ''
   }
@@ -62,28 +58,43 @@ const typeNextChar = () => {
   if (currentChar.value < line.length) {
     const char = line[currentChar.value]
     const isSpace = WHITESPACE_REGEX.test(char)
+    const urlMatch = URL_REGEX.exec(line.substring(currentChar.value))
+    if (urlMatch) {
+      isLink.value = true
+      displayedText.value[currentLine.value] +=
+        `<a href="${urlMatch[0]}" target="_blank" rel="noopener noreferrer" onclick="event => event.stopPropagation()">`
+    }
+
     displayedText.value[currentLine.value] += char
-    currentChar.value++
     
-    isSpace ? emit('typed-line') : emit('typing')
+    if (isSpace) {
+      isLink.value = false
+      displayedText.value[currentLine.value] += '</a>'
+      emit('talked-space')
+    } else {
+      emit('typing')
+    }
+
+    currentChar.value++
     setTimeout(typeNextChar, props.delay)
   } else {
+    if (isLink.value) {
+      isLink.value = false
+      displayedText.value[currentLine.value] += '</a>'
+    }
     emit('typed-line')
     currentChar.value = 0
     currentLine.value++
-    if (currentLine.value < splitMessage.value.length) {
-      setTimeout(() => {
-        lines.value++
-        typeNextChar()
-      }, props.delay * 4)
+    if (currentLine.value < lines.value.length) {
+      setTimeout(typeNextChar, props.delay * 4)
     } else {
       emit('typed-all')
     }
   }
 }
 
-const touched = () => {
-  emit('touched')
+const touched = (e) => {
+  if (!(e.target instanceof HTMLAnchorElement)) emit('touched')
 }
 
 watch(() => props.message, () => {
@@ -118,4 +129,11 @@ watch(() => props.message, () => {
     margin: 0
     padding: 0
     letter-spacing: .05em
+
+:deep(a)
+  color: #0066cc
+  text-decoration: none
+  
+  &:hover
+    text-decoration: underline
 </style>

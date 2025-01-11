@@ -4,6 +4,7 @@ div.demo-page
     talk-avatar(
       :srcset="avatarImages"
       :message="message"
+      :delay="delay"
       @talked-all="onTalkedAll"
     )
   
@@ -12,6 +13,15 @@ div.demo-page
       textarea(
         v-model="messageInput"
         placeholder="メッセージを入力"
+      )
+    div.delay-input
+      label 文字送り速度（ms）：
+      input(
+        type="number"
+        v-model.number="delay"
+        min="10"
+        max="1000"
+        step="10"
       )
     button.send-button(
       @click="sendMessage"
@@ -23,6 +33,7 @@ import { ref } from 'vue'
 
 const messageInput = ref('')
 const message = ref('Hello world!\nI am talk avatar. This is demonstration.')
+const delay = ref(70)
 const avatarImages = ref([
   '/img/masaki_default.png',
   '/img/masaki_talking.png',
@@ -54,6 +65,17 @@ const onTalkedAll = () => {
   textarea
     width: 100%
     min-height: 60px
+
+.delay-input
+  display: flex
+  align-items: center
+  gap: 8px
+  
+  input
+    width: 80px
+    padding: 4px
+    border: 1px solid #ddd
+    border-radius: 4px
 
 .send-button
   padding: 0 20px
