@@ -72,6 +72,8 @@ defineExpose({
 </script>
 
 <style lang="sass" scoped>
+@use './css/_variables' as v
+
 .avatar_image
   cursor: pointer
   pointer-events: auto

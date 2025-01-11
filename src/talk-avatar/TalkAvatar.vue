@@ -90,7 +90,7 @@ watch(() => props.message, () => {
 </script>
 
 <style lang="sass" scoped>
-@use './css/_variables' as *
+@use './css/_variables' as v
 
 #TalkAvatar
   bottom: 0
@@ -102,7 +102,7 @@ watch(() => props.message, () => {
   pointer-events: none
   right: 0
 
-  @include touch
+  @include v.touch
     padding: 4px
 
 .avatar
@@ -119,11 +119,11 @@ watch(() => props.message, () => {
     &-img
       margin: 0
 
-      @include desktop
+      @include v.desktop
         height: 128px
         width: 128px
 
-      @include touch
+      @include v.touch
         height: 64px
         width: 64px
 </style>

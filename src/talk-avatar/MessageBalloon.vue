@@ -106,7 +106,7 @@ watch(() => props.message, () => {
 </script>
 
 <style lang="sass" scoped>
-@use './css/_variables' as *
+@use './css/_variables' as v
 
 .balloon
   background: #ffffff
@@ -120,7 +120,7 @@ watch(() => props.message, () => {
   min-height: 4.8em
   line-height: 1.6
 
-  @include touch
+  @include v.touch
     font-size: 14px
     min-height: 3.5em
     padding: 4px 8px
