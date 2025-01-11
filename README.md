@@ -1,5 +1,5 @@
 # TalkAvatar
-![](./static/talk-avatar.gif)
+![](./src/demo/public/talk-avatar.gif)
 
 > メッセージを入力すると、アバターが喋ります。
 > アバターには自分の好きな画像を設定することができ、
