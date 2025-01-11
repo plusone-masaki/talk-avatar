@@ -35,8 +35,8 @@ const messageInput = ref('')
 const message = ref('Hello world!\nI am talk avatar. This is demonstration.')
 const delay = ref(70)
 const avatarImages = ref([
-  '/img/masaki_default.png',
-  '/img/masaki_talking.png',
+  `${import.meta.env.BASE_URL}/img/masaki_default.png`,
+  `${import.meta.env.BASE_URL}/img/masaki_talking.png`,
 ])
 
 const sendMessage = () => {
