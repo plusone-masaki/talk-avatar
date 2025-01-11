@@ -56,8 +56,7 @@ const onTalkedAll = () => {
   margin-bottom: 20px
 
 .demo-controls
-  display: flex
-  gap: 10px
+  text-align: right
   
 .message-input
   flex: 1

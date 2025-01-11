@@ -29,7 +29,7 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "src/shims-vue.d.ts"
+    "src/demo/vite-env.d.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }],
   "vueCompilerOptions": {
