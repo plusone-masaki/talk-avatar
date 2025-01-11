@@ -31,7 +31,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.demo.config.ts",
     "build": "vite build",
     "build:demo": "vite build --config vite.demo.config.ts",
     "build:all": "npm run build && npm run build:demo",
